@@ -24,12 +24,19 @@ class SessionsController extends Controller
         ]);
         if(Auth::attempt($credentias, $request->has('remember'))){
             //登陆成功后的操作
-            session()->flash('success','欢迎回来');
-            //
+            if(Auth::user()->activated){
+              session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
+              return redirect()->route('users.show', [Auth::user()]);
+            }else{
+              Auth::logout();
+              session()->flash('warning','你的帐号没激活，请检查邮箱中的注册邮件进行激活');
+              return redirect('/');
+            }
+          //  session()->flash('success','欢迎回来');
+
             // $fallback =  redirect()->route('users.show',[Auth::user()]);
             // return redirect()->intended($fallback);
-            session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
-            return redirect()->route('users.show', [Auth::user()]);
+
 
         }else{
             //登陆失败后的操作
