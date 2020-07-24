@@ -17,6 +17,7 @@ class SessionsController extends Controller
 
     public function store(Request $request)
     {
+
         $credentias = $this->validate($request,[
           'email' => 'required|email|max:255',
           'password' => 'required'
@@ -24,8 +25,12 @@ class SessionsController extends Controller
         if(Auth::attempt($credentias, $request->has('remember'))){
             //登陆成功后的操作
             session()->flash('success','欢迎回来');
-            $fallback =  redirect()->route('users.show',[Auth::user()]);
-            return redirect()->intended($fallback);
+            //
+            // $fallback =  redirect()->route('users.show',[Auth::user()]);
+            // return redirect()->intended($fallback);
+            session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
+            return redirect()->route('users.show', [Auth::user()]);
+
         }else{
             //登陆失败后的操作
             session()->flash('danger','很抱歉，您的邮箱和密码不匹配');
