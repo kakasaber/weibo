@@ -15,11 +15,11 @@ class SessionsController extends Controller
 
     public function store(Request $request)
     {
-        $creadentials = $this->validate($request,[
+        $credentias = $this->validate($request,[
           'email' => 'required|email|max:255',
           'password' => 'required'
         ]);
-        if(Auth::attempt($creadentials)){
+        if(Auth::attempt($credentias, $request->has('remember'))){
             //登陆成功后的操作
             session()->flash('success','欢迎回来');
             return redirect()->route('users.show',[Auth::user()]);
@@ -30,5 +30,11 @@ class SessionsController extends Controller
         }
 
         return;
+    }
+
+    public function destroy(){
+      Auth::logout();
+      session()->flash('success','您已成功退出');
+      return redirect('login');
     }
 }
